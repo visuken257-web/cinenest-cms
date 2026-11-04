@@ -12,7 +12,7 @@ import os
 import sys
 from flask import (
     Flask, render_template, redirect, url_for, request,
-    flash, make_response, abort
+    flash, make_response, abort, send_from_directory
 )
 from flask_bootstrap import Bootstrap
 from flask_login import (
@@ -32,8 +32,16 @@ from db_config import get_database_uri  # noqa: E402
 
 DB_NAME = "BookNest_Ch08"
 
-app = Flask(__name__, static_folder="static", template_folder="templates")
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+TEMPLATE_DIR = os.path.join(BASE_DIR, "templates")
+
+app = Flask(__name__, static_folder=STATIC_DIR, template_folder=TEMPLATE_DIR)
 Bootstrap(app)
+
+@app.route("/static/<path:filename>")
+def serve_static(filename):
+    """Phục vụ file tĩnh (posters, css, js) tương thích hoàn toàn môi trường Vercel."""
+    return send_from_directory(STATIC_DIR, filename)
 
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "cinenest-dev-secret-key-2026")
 app.config["SQLALCHEMY_DATABASE_URI"] = get_database_uri(DB_NAME)
