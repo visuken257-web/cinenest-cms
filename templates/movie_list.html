@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block page_title %}Khám phá Phim — MovieNest CMS{% endblock %}
+
+{% block page_content %}
+<div style="margin-bottom: 25px;">
+  <h2 style="color: #fff; font-weight: 700; margin-top: 0;">
+    <i class="fas fa-film" style="color: #f59e0b;"></i> Kho Phim & Đánh Giá
+  </h2>
+  <p class="text-muted-dark">Danh sách các tác phẩm điện ảnh được cộng đồng yêu thích và thảo luận</p>
+</div>
+
+<!-- Bộ lọc thể loại & Tìm kiếm -->
+<div class="panel panel-dark" style="margin-bottom: 30px;">
+  <div class="panel-body">
+    <form method="GET" action="{{ url_for('movie_list') }}" class="form-inline" style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+      <div class="form-group" style="flex-grow:1;">
+        <input type="text" name="q" class="form-control form-control-dark" style="width:100%;" placeholder="Tìm kiếm theo tên phim, đạo diễn..." value="{{ search_query }}">
+      </div>
+      
+      <div class="form-group">
+        <select name="genre" class="form-control form-control-dark">
+          <option value="">-- Tất cả thể loại --</option>
+          {% for g in genres %}
+            <option value="{{ g.id }}" {% if current_genre == g.id %}selected{% endif %}>{{ g.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-warning-dark">
+        <i class="fas fa-search"></i> Tìm kiếm
+      </button>
+
+      {% if search_query or current_genre %}
+        <a href="{{ url_for('movie_list') }}" class="btn btn-default" style="background:#333; color:#aaa; border-color:#444;">
+          <i class="fas fa-times"></i> Xoá lọc
+        </a>
+      {% endif %}
+    </form>
+  </div>
+</div>
+
+<!-- Grid danh sách toàn bộ phim -->
+<div class="row">
+  {% for movie in movies %}
+    <div class="col-md-4 col-sm-6">
+      <div class="card-movie">
+        <div class="movie-card-row">
+          <a href="{{ url_for('movie_detail', movie_id=movie.id) }}">
+            <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster-thumb">
+          </a>
+          <div class="movie-info-col">
+            <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="movie-title-link" title="{{ movie.title }}">
+              {{ movie.title }}
+            </a>
+            <div class="movie-genre-text">
+              {{ movie.genre.name }} {% if movie.release_year %}• {{ movie.release_year }}{% endif %}
+            </div>
+            {% if movie.director %}
+              <div style="font-size:11px; color:#777; margin-bottom:6px;">
+                ĐD: {{ movie.director }}
+              </div>
+            {% endif %}
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                {% if movie.average_rating %}
+                  <span class="badge-score">
+                    <i class="fas fa-star"></i> {{ movie.average_rating }}
+                  </span>
+                  <span style="font-size:11px; color:#888; margin-left:4px;">({{ movie.review_count }})</span>
+                {% else %}
+                  <span style="font-size:11px; color:#777;">Chưa có điểm</span>
+                {% endif %}
+              </div>
+              <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="btn btn-xs btn-default" style="background:#262626; border-color:#3e3e3e; color:#ccc;">
+                Chi tiết & Đánh giá <i class="fas fa-chevron-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="col-xs-12">
+      <div class="panel panel-dark text-center" style="padding: 50px;">
+        <i class="fas fa-film fa-3x" style="color: #555; margin-bottom: 15px;"></i>
+        <h4 style="color: #aaa;">Không tìm thấy bộ phim nào phù hợp</h4>
+        <p class="text-muted-dark">Thử tìm kiếm với từ khóa khác hoặc xóa bộ lọc thể loại.</p>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

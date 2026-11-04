@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block page_title %}Trang chủ — MovieNest CMS{% endblock %}
+
+{% block page_content %}
+<!-- PHẦN 1: HERO & PHIM ĐÁNH GIÁ CAO (TOP RATED MOVIES) -->
+<div style="margin-bottom: 30px;">
+  <div class="row" style="align-items: center; margin-bottom: 15px;">
+    <div class="col-xs-8">
+      <h2 style="margin: 0; font-weight: 700; color: #fff;">
+        <i class="fas fa-fire" style="color: #ef4444;"></i> Phim Đánh Giá Cao Nhất
+      </h2>
+      <p class="text-muted-dark" style="margin-top: 5px; font-size: 14px;">
+        Được cộng đồng và các nhà phê bình chấm điểm cao nhất
+      </p>
+    </div>
+    <div class="col-xs-4 text-right">
+      <a href="{{ url_for('movie_list') }}" class="btn btn-sm btn-default" style="background:#262626; border-color:#3e3e3e; color:#ccc;">
+        Xem tất cả phim <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+  </div>
+
+  <!-- Grid phim giống phong cách ảnh demo -->
+  <div class="row">
+    {% for movie in top_movies %}
+      <div class="col-md-4 col-sm-6">
+        <div class="card-movie">
+          <div class="movie-card-row">
+            <a href="{{ url_for('movie_detail', movie_id=movie.id) }}">
+              <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster-thumb">
+            </a>
+            <div class="movie-info-col">
+              <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="movie-title-link" title="{{ movie.title }}">
+                {{ movie.title }}
+              </a>
+              <div class="movie-genre-text">
+                {{ movie.genre.name }} {% if movie.release_year %}• {{ movie.release_year }}{% endif %}
+              </div>
+              <div>
+                {% if movie.average_rating %}
+                  <span class="badge-score">
+                    <i class="fas fa-star"></i> {{ movie.average_rating }}
+                  </span>
+                  <span style="font-size: 11px; color: #888; margin-left: 6px;">({{ movie.review_count }} lượt)</span>
+                {% else %}
+                  <span style="font-size: 12px; color: #777;">Chưa có điểm</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<hr style="border-color: #2b2b2b; margin: 30px 0;">
+
+<!-- PHẦN 2: DIỄN ĐÀN BÀN LUẬN & TRANG CHỦ CÁ NHÂN HOÁ (COOKIE SHOW_FOLLOWED) -->
+<div class="row">
+  <div class="col-md-8">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h3 style="margin: 0; color: #fff; font-weight: 700;">
+        <i class="fas fa-comments" style="color: #f59e0b;"></i> Bàn Luận Phim Sôi Nổi
+      </h3>
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('blog_new') }}" class="btn btn-warning-dark btn-sm">
+          <i class="fas fa-plus"></i> Viết bài mới
+        </a>
+      {% endif %}
+    </div>
+
+    <!-- Tab cá nhân hoá bằng Cookie (Yêu cầu cốt lõi của Chapter 8) -->
+    <ul class="nav nav-pills" style="margin-bottom: 20px;">
+      <li role="presentation" class="{% if not show_followed %}active{% endif %}">
+        <a href="{{ url_for('home', show='all') }}" style="border-radius:20px; padding:6px 16px;">
+          <i class="fas fa-globe"></i> Tất cả bài viết
+        </a>
+      </li>
+      {% if current_user.is_authenticated %}
+        <li role="presentation" class="{% if show_followed %}active{% endif %}">
+          <a href="{{ url_for('home', show='followed') }}" style="border-radius:20px; padding:6px 16px;">
+            <i class="fas fa-user-friends"></i> Chỉ xem người tôi follow
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+
+    {% for post in posts %}
+      <div class="panel panel-dark">
+        <div class="panel-body">
+          <div style="display: flex; align-items: center; margin-bottom: 12px;">
+            <img src="{{ post.author.gravatar_url(36) }}" width="36" height="36" style="border-radius:50%; margin-right:10px;">
+            <div>
+              <a href="{{ url_for('profile', username=post.author.username) }}" style="color:#f59e0b; font-weight:600; text-decoration:none;">
+                {{ post.author.username }}
+              </a>
+              <span class="text-muted-dark" style="font-size: 12px; margin-left: 8px;">
+                <i class="far fa-clock"></i> {{ post.created_at.strftime('%d/%m/%Y %H:%M') }}
+              </span>
+            </div>
+          </div>
+
+          <h4 style="margin-top: 0; margin-bottom: 10px;">
+            <a href="{{ url_for('blog_detail', post_id=post.id) }}" style="color:#fff; text-decoration:none; font-weight:600;">
+              {{ post.title }}
+            </a>
+          </h4>
+
+          <div style="color: #bbb; line-height: 1.6; max-height: 120px; overflow: hidden; position: relative;">
+            {{ post.body_html | safe }}
+          </div>
+          
+          <div style="margin-top: 10px;">
+            <a href="{{ url_for('blog_detail', post_id=post.id) }}" style="color: #f59e0b; font-size: 13px; font-weight: 500;">
+              Đọc toàn bộ bài phân tích <i class="fas fa-angle-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="panel panel-dark">
+        <div class="panel-body text-center" style="padding: 40px;">
+          <p style="color: #888; font-size: 16px;"><i class="fas fa-inbox fa-2x"></i></p>
+          <p style="color: #aaa;">Không có bài viết nào phù hợp.</p>
+          {% if show_followed %}
+            <p class="text-muted-dark" style="font-size: 13px;">Hãy theo dõi thêm các reviewer khác hoặc chuyển sang tab "Tất cả bài viết".</p>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- CỘT PHẢI: WIDGET THÔNG TIN & TÀI KHOẢN -->
+  <div class="col-md-4">
+    <!-- Box Tài khoản cá nhân -->
+    {% if current_user.is_authenticated %}
+      <div class="panel panel-dark">
+        <div class="panel-heading"><i class="fas fa-id-badge"></i> Tài khoản của bạn</div>
+        <div class="panel-body text-center">
+          <img src="{{ current_user.gravatar_url(70) }}" width="70" height="70" style="border-radius:50%; margin-bottom:10px; border:2px solid #f59e0b;">
+          <h4 style="margin:0 0 5px 0; color:#fff;">{{ current_user.username }}</h4>
+          <span class="label label-warning" style="background-color:#d97706;">{{ current_user.role.name }}</span>
+          <p class="text-muted-dark" style="font-size:12px; margin-top:8px;">{{ current_user.email }}</p>
+          <hr style="border-color:#333; margin:15px 0;">
+          <a href="{{ url_for('profile', username=current_user.username) }}" class="btn btn-default btn-block" style="background:#262626; border-color:#3e3e3e; color:#ccc;">
+            <i class="fas fa-user"></i> Xem hồ sơ cá nhân
+          </a>
+        </div>
+      </div>
+    {% else %}
+      <div class="panel panel-dark">
+        <div class="panel-heading"><i class="fas fa-users"></i> Tham gia cộng đồng</div>
+        <div class="panel-body">
+          <p style="color:#aaa; font-size:13px; line-height:1.5;">
+            Đăng nhập để chấm điểm từ 1-10 cho các bộ phim yêu thích, viết bình luận và theo dõi các nhà phê bình phim khác!
+          </p>
+          <a href="{{ url_for('login') }}" class="btn btn-warning-dark btn-block" style="margin-bottom:10px;">
+            <i class="fas fa-sign-in-alt"></i> Đăng nhập ngay
+          </a>
+          <a href="{{ url_for('register') }}" class="btn btn-default btn-block" style="background:#262626; border-color:#3e3e3e; color:#ccc;">
+            <i class="fas fa-user-plus"></i> Tạo tài khoản mới
+          </a>
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- Box Hướng dẫn Demo -->
+    <div class="panel panel-dark">
+      <div class="panel-heading"><i class="fas fa-info-circle"></i> Điểm nổi bật môn học</div>
+      <div class="panel-body" style="font-size: 13px; color: #aaa;">
+        <ul style="padding-left: 20px; line-height: 1.8;">
+          <li><strong>Gravatar:</strong> Avatar bảo vệ quyền riêng tư qua hash MD5 email.</li>
+          <li><strong>SQL Server:</strong> Lưu trữ NVARCHAR tiếng Việt chuẩn và quan hệ nhiều-nhiều.</li>
+          <li><strong>Đánh giá 1-10:</strong> Tính điểm trung bình và chống XSS bằng <code>bleach</code>.</li>
+          <li><strong>Follow & Cookie:</strong> Lọc bảng tin cá nhân hoá lưu trên trình duyệt.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

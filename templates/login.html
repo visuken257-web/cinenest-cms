@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block page_title %}Đăng nhập — MovieNest CMS{% endblock %}
+
+{% block page_content %}
+<div class="row" style="margin-top: 40px;">
+  <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
+    <div class="panel panel-dark" style="box-shadow: 0 10px 30px rgba(0,0,0,0.6); border-radius: 10px;">
+      <div class="panel-heading text-center" style="padding: 20px 15px; border-bottom: 1px solid #333;">
+        <h3 style="margin: 0; color: #fff; font-weight: 700;">
+          <i class="fas fa-sign-in-alt" style="color: #f59e0b;"></i> Đăng Nhập
+        </h3>
+        <p class="text-muted-dark" style="margin: 6px 0 0 0; font-size: 13px;">Tham gia cộng đồng bàn luận phim MovieNest</p>
+      </div>
+
+      <div class="panel-body" style="padding: 25px;">
+        <form method="POST" action="{{ url_for('login') }}">
+          <div class="form-group">
+            <label style="color: #ddd;">Tên đăng nhập hoặc Email:</label>
+            <div class="input-group">
+              <span class="input-group-addon" style="background:#2a2a2a; border-color:#404040; color:#aaa;"><i class="fas fa-user"></i></span>
+              <input type="text" name="identifier" class="form-control form-control-dark" placeholder="Nhập username hoặc email..." required autofocus>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label style="color: #ddd;">Mật khẩu:</label>
+            <div class="input-group">
+              <span class="input-group-addon" style="background:#2a2a2a; border-color:#404040; color:#aaa;"><i class="fas fa-lock"></i></span>
+              <input type="password" name="password" class="form-control form-control-dark" placeholder="Nhập mật khẩu..." required>
+            </div>
+          </div>
+
+          <div class="checkbox">
+            <label style="color: #bbb;">
+              <input type="checkbox" name="remember" value="1"> Ghi nhớ đăng nhập
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-warning-dark btn-block" style="padding: 10px; font-size: 15px; margin-top: 15px;">
+            Đăng nhập ngay
+          </button>
+        </form>
+
+        <hr style="border-color: #333; margin: 20px 0;">
+
+        <!-- Đăng nhập nhanh cho demo -->
+        <div style="background-color: #222; padding: 12px; border-radius: 6px; text-align: center;">
+          <p style="color: #f59e0b; font-size: 12px; font-weight: 600; margin-bottom: 8px;">
+            <i class="fas fa-bolt"></i> ĐĂNG NHẬP NHANH (DEMO GIẢNG ĐƯỜNG)
+          </p>
+          <div style="display: flex; justify-content: center; gap: 6px; flex-wrap: wrap;">
+            <a href="{{ url_for('quick_login', username='admin') }}" class="btn btn-xs btn-default" style="background:#333; color:#ddd; border-color:#444;">admin (Quản trị)</a>
+            <a href="{{ url_for('quick_login', username='critic') }}" class="btn btn-xs btn-default" style="background:#333; color:#ddd; border-color:#444;">critic (Reviewer)</a>
+            <a href="{{ url_for('quick_login', username='user') }}" class="btn btn-xs btn-default" style="background:#333; color:#ddd; border-color:#444;">user (Khán giả)</a>
+          </div>
+        </div>
+
+        <p class="text-center" style="margin-top: 20px; font-size: 13px; color: #888;">
+          Chưa có tài khoản? <a href="{{ url_for('register') }}" style="color: #f59e0b; font-weight: 600;">Tạo tài khoản mới</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

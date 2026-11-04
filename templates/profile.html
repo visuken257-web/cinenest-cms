@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{ user.username }} — Hồ sơ cá nhân | MovieNest{% endblock %}
+
+{% block page_content %}
+<div class="row">
+  <!-- Cột Trái: Thông tin người dùng -->
+  <div class="col-md-4">
+    <div class="panel panel-dark text-center" style="padding: 25px 20px;">
+      <img src="{{ user.gravatar_url(100) }}" width="100" height="100" style="border-radius: 50%; border: 3px solid #f59e0b; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.6);">
+      
+      <h3 style="color: #fff; margin: 0 0 5px 0; font-weight: 700;">{{ user.username }}</h3>
+      <span class="label label-warning" style="background-color: #d97706; font-size: 12px;">{{ user.role.name }}</span>
+      <p class="text-muted-dark" style="font-size: 13px; margin-top: 10px;">
+        <i class="fas fa-envelope"></i> {{ user.email }}
+      </p>
+      <p class="text-muted-dark" style="font-size: 12px;">
+        <i class="far fa-calendar-alt"></i> Thành viên từ: {{ user.created_at.strftime('%m/%Y') }}
+      </p>
+
+      <!-- Thống kê Follow & Review -->
+      <div style="display: flex; justify-content: space-around; margin: 20px 0; padding: 12px 0; background: #222; border-radius: 8px;">
+        <div>
+          <div style="font-size: 18px; font-weight: 700; color: #fff;">{{ followers_count }}</div>
+          <div class="text-muted-dark" style="font-size: 11px;">Người theo dõi</div>
+        </div>
+        <div>
+          <div style="font-size: 18px; font-weight: 700; color: #fff;">{{ following_count }}</div>
+          <div class="text-muted-dark" style="font-size: 11px;">Đang theo dõi</div>
+        </div>
+        <div>
+          <div style="font-size: 18px; font-weight: 700; color: #f59e0b;">{{ user_reviews|length }}</div>
+          <div class="text-muted-dark" style="font-size: 11px;">Đánh giá</div>
+        </div>
+      </div>
+
+      <!-- Nút Follow / Unfollow -->
+      {% if current_user.is_authenticated and current_user.id != user.id %}
+        <form method="POST" action="{{ url_for('toggle_follow', username=user.username) }}">
+          {% if is_following %}
+            <button class="btn btn-default btn-block" style="background: #333; color: #fca5a5; border-color: #ef4444;">
+              <i class="fas fa-user-minus"></i> Bỏ theo dõi
+            </button>
+          {% else %}
+            <button class="btn btn-warning-dark btn-block">
+              <i class="fas fa-user-plus"></i> Theo dõi @{{ user.username }}
+            </button>
+          {% endif %}
+        </form>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Cột Phải: Các đánh giá phim của người này -->
+  <div class="col-md-8">
+    <div class="panel panel-dark">
+      <div class="panel-heading" style="font-size: 16px;">
+        <i class="fas fa-star" style="color: #f59e0b;"></i> Các phim đã đánh giá ({{ user_reviews|length }})
+      </div>
+      <div class="panel-body">
+        {% for rev in user_reviews %}
+          <div style="display: flex; gap: 15px; padding: 15px 0; border-bottom: 1px solid #282828;">
+            <a href="{{ url_for('movie_detail', movie_id=rev.movie.id) }}">
+              <img src="{{ rev.movie.poster_url }}" alt="{{ rev.movie.title }}" style="width: 65px; height: 90px; object-fit: cover; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+            </a>
+            <div style="flex-grow: 1;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h4 style="margin: 0;">
+                  <a href="{{ url_for('movie_detail', movie_id=rev.movie.id) }}" style="color: #fff; font-weight: 600; text-decoration: none;">
+                    {{ rev.movie.title }}
+                  </a>
+                </h4>
+                <span class="badge-score">
+                  <i class="fas fa-star"></i> {{ rev.rating }} / 10
+                </span>
+              </div>
+              <p class="text-muted-dark" style="font-size: 12px; margin: 4px 0 8px 0;">
+                {{ rev.movie.genre.name }} • Đánh giá ngày {{ rev.created_at.strftime('%d/%m/%Y') }}
+              </p>
+              <div style="color: #ccc; font-size: 13px; line-height: 1.5;">
+                {{ rev.body_html | safe }}
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <div class="text-center" style="padding: 40px; color: #888;">
+            <p>Người dùng này chưa đánh giá bộ phim nào.</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block page_title %}Tạo tài khoản — MovieNest CMS{% endblock %}
+
+{% block page_content %}
+<div class="row" style="margin-top: 30px;">
+  <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
+    <div class="panel panel-dark" style="box-shadow: 0 10px 30px rgba(0,0,0,0.6); border-radius: 10px;">
+      <div class="panel-heading text-center" style="padding: 20px 15px; border-bottom: 1px solid #333;">
+        <h3 style="margin: 0; color: #fff; font-weight: 700;">
+          <i class="fas fa-user-plus" style="color: #f59e0b;"></i> Tạo Tài Khoản Mới
+        </h3>
+        <p class="text-muted-dark" style="margin: 6px 0 0 0; font-size: 13px;">Gia nhập cộng đồng người yêu điện ảnh</p>
+      </div>
+
+      <div class="panel-body" style="padding: 25px;">
+        <form method="POST" action="{{ url_for('register') }}">
+          <div class="form-group">
+            <label style="color: #ddd;">Tên đăng nhập (Username):</label>
+            <div class="input-group">
+              <span class="input-group-addon" style="background:#2a2a2a; border-color:#404040; color:#aaa;"><i class="fas fa-user"></i></span>
+              <input type="text" name="username" class="form-control form-control-dark" placeholder="Ví dụ: pham_reviewer" value="{{ username or '' }}" required autofocus>
+            </div>
+            <p class="text-muted-dark" style="font-size: 11px; margin-top: 4px;">Ít nhất 3 ký tự, viết liền không dấu.</p>
+          </div>
+
+          <div class="form-group">
+            <label style="color: #ddd;">Địa chỉ Email:</label>
+            <div class="input-group">
+              <span class="input-group-addon" style="background:#2a2a2a; border-color:#404040; color:#aaa;"><i class="fas fa-envelope"></i></span>
+              <input type="email" name="email" class="form-control form-control-dark" placeholder="email@vidu.com" value="{{ email or '' }}" required>
+            </div>
+            <p class="text-muted-dark" style="font-size: 11px; margin-top: 4px;">Avatar của bạn sẽ tự động đồng bộ qua dịch vụ Gravatar.</p>
+          </div>
+
+          <div class="form-group">
+            <label style="color: #ddd;">Mật khẩu:</label>
+            <div class="input-group">
+              <span class="input-group-addon" style="background:#2a2a2a; border-color:#404040; color:#aaa;"><i class="fas fa-lock"></i></span>
+              <input type="password" name="password" class="form-control form-control-dark" placeholder="Ít nhất 6 ký tự..." required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label style="color: #ddd;">Xác nhận mật khẩu:</label>
+            <div class="input-group">
+              <span class="input-group-addon" style="background:#2a2a2a; border-color:#404040; color:#aaa;"><i class="fas fa-check-circle"></i></span>
+              <input type="password" name="confirm_password" class="form-control form-control-dark" placeholder="Nhập lại mật khẩu..." required>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-warning-dark btn-block" style="padding: 10px; font-size: 15px; margin-top: 20px;">
+            Đăng ký tài khoản
+          </button>
+        </form>
+
+        <p class="text-center" style="margin-top: 20px; font-size: 13px; color: #888;">
+          Đã có tài khoản? <a href="{{ url_for('login') }}" style="color: #f59e0b; font-weight: 600;">Đăng nhập ngay</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

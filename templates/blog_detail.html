@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{ post.title }} — MovieNest{% endblock %}
+
+{% block page_content %}
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <div style="margin-bottom: 20px;">
+      <a href="{{ url_for('blog_list') }}" style="color: #f59e0b; text-decoration: none; font-size: 13px;">
+        <i class="fas fa-arrow-left"></i> Quay lại danh sách bài viết
+      </a>
+    </div>
+
+    <article class="panel panel-dark" style="padding: 30px; border-radius: 10px;">
+      <h1 style="color: #fff; font-weight: 700; margin-top: 0; line-height: 1.4;">
+        {{ post.title }}
+      </h1>
+
+      <div style="display: flex; align-items: center; margin: 20px 0; padding-bottom: 20px; border-bottom: 1px solid #2e2e2e;">
+        <img src="{{ post.author.gravatar_url(44) }}" width="44" height="44" style="border-radius: 50%; margin-right: 12px; border: 2px solid #f59e0b;">
+        <div>
+          <div>
+            <a href="{{ url_for('profile', username=post.author.username) }}" style="color: #fff; font-weight: 600; font-size: 15px; text-decoration: none;">
+              {{ post.author.username }}
+            </a>
+            <span class="label label-warning" style="margin-left: 8px; background: #d97706; font-size: 11px;">{{ post.author.role.name }}</span>
+          </div>
+          <div class="text-muted-dark" style="font-size: 12px; margin-top: 2px;">
+            <i class="far fa-clock"></i> Đăng ngày {{ post.created_at.strftime('%d/%m/%Y lúc %H:%M') }}
+          </div>
+        </div>
+      </div>
+
+      <div style="color: #ddd; font-size: 15px; line-height: 1.8;">
+        {{ post.body_html | safe }}
+      </div>
+    </article>
+  </div>
+</div>
+{% endblock %}

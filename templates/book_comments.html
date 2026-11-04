@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block page_title %}Đánh giá sách #{{ book_id }} — BookNest{% endblock %}
+{% block page_content %}
+  <h1>Đánh giá sách #{{ book_id }}</h1>
+
+  {% if current_user.is_authenticated %}
+    <form method="POST" action="{{ url_for('add_comment', book_id=book_id) }}" class="form">
+      <p class="text-muted">Hỗ trợ Markdown cơ bản: **đậm**, *nghiêng*, [link](url). KHÔNG hỗ trợ tiêu đề (giới hạn cho comment).</p>
+      <div class="form-group">
+        <textarea class="form-control" name="body_md" rows="3" placeholder="Viết đánh giá của bạn (Markdown)..."></textarea>
+      </div>
+      <button class="btn btn-primary" type="submit">Gửi đánh giá</button>
+    </form>
+    <hr>
+  {% endif %}
+
+  {% for c in comments %}
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <p class="text-muted">
+          <img src="{{ c.author.gravatar_url(20) }}" width="20" height="20" style="border-radius:50%;vertical-align:middle;">
+          {{ c.author.username }} · {{ c.created_at.strftime('%d/%m/%Y %H:%M') }}
+        </p>
+        <div>{{ c.body_html | safe }}</div>
+      </div>
+    </div>
+  {% else %}
+    <p>Chưa có đánh giá nào.</p>
+  {% endfor %}
+{% endblock %}

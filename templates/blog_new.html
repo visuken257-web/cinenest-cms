@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block page_title %}Viết bài bàn luận mới — MovieNest{% endblock %}
+
+{% block page_content %}
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <div class="panel panel-dark" style="box-shadow: 0 10px 30px rgba(0,0,0,0.6); border-radius: 10px;">
+      <div class="panel-heading" style="padding: 20px;">
+        <h3 style="margin: 0; color: #fff; font-weight: 700;">
+          <i class="fas fa-pen-fancy" style="color: #f59e0b;"></i> Viết Bài Bàn Luận Điện Ảnh
+        </h3>
+        <p class="text-muted-dark" style="margin: 5px 0 0 0; font-size: 13px;">Chia sẻ góc nhìn, phân tích và cảm nhận nghệ thuật của bạn</p>
+      </div>
+
+      <div class="panel-body" style="padding: 25px;">
+        <form method="POST" action="{{ url_for('blog_new') }}">
+          <div class="form-group">
+            <label style="color: #ddd;">Tiêu đề bài viết:</label>
+            <input type="text" name="title" class="form-control form-control-dark" placeholder="Ví dụ: Giải mã tầng ý nghĩa ẩn sau cái kết của phim..." required autofocus>
+          </div>
+
+          <div class="form-group">
+            <label style="color: #ddd;">Gắn liền với bộ phim (tùy chọn):</label>
+            <select name="movie_id" class="form-control form-control-dark">
+              <option value="">-- Bàn luận chung / Không chọn --</option>
+              {% for m in movies %}
+                <option value="{{ m.id }}">{{ m.title }} ({{ m.release_year }})</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label style="color: #ddd;">Nội dung bài phân tích (Hỗ trợ định dạng Markdown):</label>
+            <textarea name="body_md" class="form-control form-control-dark" rows="12" placeholder="Hỗ trợ đầy đủ: ## Tiêu đề lớn, ### Tiêu đề nhỏ, **in đậm**, *in nghiêng*, trích dẫn >, danh sách gạch đầu dòng -, và đoạn code..." required></textarea>
+            <p class="text-muted-dark" style="font-size: 12px; margin-top: 6px;">
+              <i class="fab fa-markdown"></i> Nội dung được render chuẩn Markdown và làm sạch tự động bằng <code>bleach</code> để đảm bảo an toàn bảo mật.
+            </p>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px;">
+            <a href="{{ url_for('blog_list') }}" class="btn btn-default" style="background: #2a2a2a; border-color: #404040; color: #ccc;">
+              Hủy bỏ
+            </a>
+            <button type="submit" class="btn btn-warning-dark" style="padding: 8px 25px; font-size: 15px;">
+              <i class="fas fa-paper-plane"></i> Xuất bản bài viết
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
